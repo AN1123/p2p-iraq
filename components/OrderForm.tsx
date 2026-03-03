@@ -20,9 +20,10 @@ export function OrderForm({ type }: { type: OrderType }) {
 
   const amountNum = parseFloat(amount) || 0
   const rate = type === 'BUY' ? buyRate : sellRate
-  const calc = type === 'BUY'
-    ? calcBuyTotal(amountNum, rate)
-    : calcSellReceive(amountNum, rate)
+  const buyCalc  = calcBuyTotal(amountNum, rate)
+  const sellCalc = calcSellReceive(amountNum, rate)
+  const totalIqd = isBuy ? buyCalc.total : sellCalc.receive
+  const commission = isBuy ? buyCalc.commission : sellCalc.commission
 
   const botUsername = process.env.NEXT_PUBLIC_BOT_USERNAME || 'YourBot'
   const deepLink = `https://t.me/${botUsername}?start=${type.toLowerCase()}_${amountNum}_${network}`
@@ -86,11 +87,11 @@ export function OrderForm({ type }: { type: OrderType }) {
             </div>
             <div className="flex justify-between text-zinc-400">
               <span>العمولة 1%</span>
-              <span>{calc.commission.toLocaleString()} IQD</span>
+              <span>{commission.toLocaleString()} IQD</span>
             </div>
             <div className="flex justify-between font-bold text-white border-t border-zinc-800 pt-1 mt-1">
               <span>{isBuy ? 'تدفع' : 'تستلم'}</span>
-              <span>{(isBuy ? calc.total : calc.receive).toLocaleString()} IQD</span>
+              <span>{totalIqd.toLocaleString()} IQD</span>
             </div>
           </div>
         )}
