@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { calcBuyTotal, calcSellReceive, GOVERNORATES } from '@p2p-iraq/shared'
+import { calcBuyTotal, calcSellReceive, GOVERNORATES } from '@/lib/shared'
 
 type OrderType = 'BUY' | 'SELL'
 
