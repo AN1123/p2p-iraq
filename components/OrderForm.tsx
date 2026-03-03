@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { calcBuyTotal, calcSellReceive, GOVERNORATES } from '@/lib/shared'
+import { calcBuyTotal, calcSellReceive } from '@/lib/shared'
 
 type OrderType = 'BUY' | 'SELL'
 
@@ -18,17 +18,15 @@ export function OrderForm({ type }: { type: OrderType }) {
       .catch(() => {})
   }, [])
 
+  const isBuy = type === 'BUY'
   const amountNum = parseFloat(amount) || 0
-  const rate = type === 'BUY' ? buyRate : sellRate
-  const buyCalc  = calcBuyTotal(amountNum, rate)
+  const rate = isBuy ? buyRate : sellRate
+  const buyCalc = calcBuyTotal(amountNum, rate)
   const sellCalc = calcSellReceive(amountNum, rate)
   const totalIqd = isBuy ? buyCalc.total : sellCalc.receive
   const commission = isBuy ? buyCalc.commission : sellCalc.commission
-
   const botUsername = process.env.NEXT_PUBLIC_BOT_USERNAME || 'YourBot'
   const deepLink = `https://t.me/${botUsername}?start=${type.toLowerCase()}_${amountNum}_${network}`
-
-  const isBuy = type === 'BUY'
 
   return (
     <div className={`rounded-2xl border p-6 space-y-4 ${isBuy ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
@@ -37,7 +35,6 @@ export function OrderForm({ type }: { type: OrderType }) {
       </h3>
 
       <div className="space-y-3">
-        {/* Amount */}
         <div>
           <label className="text-sm text-zinc-400 block mb-1">المبلغ (USDT)</label>
           <input
@@ -50,7 +47,6 @@ export function OrderForm({ type }: { type: OrderType }) {
           />
         </div>
 
-        {/* Network */}
         <div>
           <label className="text-sm text-zinc-400 block mb-1">الشبكة</label>
           <select
@@ -64,7 +60,6 @@ export function OrderForm({ type }: { type: OrderType }) {
           </select>
         </div>
 
-        {/* Payment */}
         <div>
           <label className="text-sm text-zinc-400 block mb-1">طريقة الدفع</label>
           <select
@@ -78,7 +73,6 @@ export function OrderForm({ type }: { type: OrderType }) {
           </select>
         </div>
 
-        {/* Calculation preview */}
         {amountNum > 0 && (
           <div className="bg-zinc-900 rounded-lg p-3 text-sm space-y-1">
             <div className="flex justify-between text-zinc-400">
@@ -96,7 +90,6 @@ export function OrderForm({ type }: { type: OrderType }) {
           </div>
         )}
 
-        {/* CTA */}
         <a
           href={deepLink}
           target="_blank"
