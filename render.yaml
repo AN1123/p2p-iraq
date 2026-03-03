@@ -1,0 +1,69 @@
+services:
+  # ─── API ─────────────────────────────────────────────────────────────
+  - type: web
+    name: p2p-iraq-api
+    env: node
+    rootDir: apps/api
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: p2p-iraq-db
+          property: connectionString
+      - key: BOT_TOKEN
+        sync: false
+      - key: ADMIN_GROUP_ID
+        sync: false
+      - key: ADMIN_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+      - key: BOT_USERNAME
+        sync: false
+      - key: ESCROW_WALLET_TRC20
+        sync: false
+      - key: ESCROW_WALLET_ERC20
+        sync: false
+      - key: ESCROW_WALLET_BEP20
+        sync: false
+
+  # ─── Bot ─────────────────────────────────────────────────────────────
+  - type: worker
+    name: p2p-iraq-bot
+    env: node
+    rootDir: apps/bot
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: BOT_USERNAME
+        sync: false
+      - key: API_URL
+        fromService:
+          name: p2p-iraq-api
+          type: web
+          property: host
+      - key: API_SECRET
+        fromService:
+          name: p2p-iraq-api
+          type: web
+          envVarKey: ADMIN_SECRET
+      - key: ADMIN_GROUP_ID
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: ESCROW_WALLET_TRC20
+        sync: false
+      - key: ESCROW_WALLET_ERC20
+        sync: false
+      - key: ESCROW_WALLET_BEP20
+        sync: false
+
+databases:
+  - name: p2p-iraq-db
+    databaseName: p2p_iraq
+    plan: free

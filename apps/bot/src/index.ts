@@ -5,6 +5,7 @@ import { buyConversation } from './conversations/buy'
 import { sellConversation } from './conversations/sell'
 import { isAdmin } from './lib/auth'
 import { MESSAGES } from './lib/messages'
+import { registerAdminHandlers } from './admin/panel'
 
 dotenv.config()
 
@@ -115,6 +116,9 @@ bot.command('admin', async (ctx) => {
     }
   )
 })
+
+// ─── Admin Handlers ───────────────────────────────────────────────────────────
+registerAdminHandlers(bot)
 
 // ─── Start bot ────────────────────────────────────────────────────────────────
 bot.start({
